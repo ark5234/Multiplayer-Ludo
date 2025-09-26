@@ -1,75 +1,212 @@
-<h1  align="center">Online Multiplayer Ludo Game </h1>
+# 🎲 Multiplayer Ludo with Real-Time Scoring System
 
-Ludo Online is a multiplayer web-based implementation of the classic board game Ludo, built using the MERN stack and integrated with SocketIO for real-time communication.
-  
 <p align="center">
->> <a href="https://youtu.be/mGMnH9Nvsyw">Watch YouTube Video here</a> <<
-  </p>
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101" alt="Socket.IO" />
+  <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge" alt="Express" />
+</p>
 
-## Architecture
+An enhanced multiplayer web-based implementation of the classic board game Ludo, built with the MERN stack and featuring a **unique real-time scoring system** that adds competitive depth while maintaining the traditional gameplay experience.
 
-![Interface](https://github.com/Wenszel/mern-ludo/blob/main/src/images/architecture.png?raw=true)
+## 🌟 What Makes This Special
 
-## Tech Stack
+This project extends the classic Ludo game with an innovative **real-time scoring system** that:
+- 📊 Tracks player progress with live score updates
+- ⚔️ Implements capture mechanics where attacking pawns steal points
+- 🏆 Determines winners through multiple criteria (traditional completion + score-based)
+- 🎯 Adds strategic depth while preserving classic Ludo rules
+- 📱 Features a beautiful, responsive scoreboard with real-time updates
 
-Frontend:
+## 🎮 Key Features
 
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![MUI](https://img.shields.io/badge/MUI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)
+### 🔥 Real-Time Scoring System
+- **Pawn Progress Scoring**: Earn points equal to dice rolls when moving pawns
+- **Capture Mechanics**: Attacking pawns steal all points from captured pawns
+- **Live Score Tracking**: Real-time scoreboard updates via WebSocket
+- **Multiple Win Conditions**: Traditional (all pawns home) + Score-based (highest points)
+- **Tie-Breaking Logic**: Uses capture count when scores are equal
 
-Backend:
+### 🎨 Enhanced User Interface
+- **Live Scoreboard**: Glass-morphism design with player rankings and capture counts
+- **Winner Overlay**: Beautiful final standings screen with complete statistics
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Smooth Animations**: Professional transitions and visual feedback
+- **Real-time Updates**: Instant score reflection across all connected players
 
-![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white) ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB) ![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+### 🛠 Technical Excellence
+- **Modular Architecture**: Scoring system completely separate from core game logic
+- **Socket.IO Integration**: Real-time communication for score updates
+- **MongoDB Integration**: Persistent game state and session management
+- **Clean Code**: Well-structured, maintainable, and documented codebase
 
-Tests:
+## 🎯 Scoring Rules
 
-![cypress](https://img.shields.io/badge/-cypress-%23E5E5E5?style=for-the-badge&logo=cypress&logoColor=058a5e) ![Mocha](https://img.shields.io/badge/-mocha-%238D6748?style=for-the-badge&logo=mocha&logoColor=white) ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+| Event | Scoring Rule | Example |
+|-------|-------------|---------|
+| **Pawn Movement** | `pawnScore += diceValue` | Roll 6 → Gain 6 points |
+| **Capture Attack** | `attackerScore += victimScore`<br>`victimScore = 0` | Capture pawn with 20 points → Attacker gains 20 |
+| **Player Total** | `playerScore = Σ(allPawnScores)` | 4 pawns: 10+15+20+5 = 50 points |
+| **Winner** | Highest score when game ends | Leader: 75 points wins |
 
-Other:
+## 🚀 Quick Start
 
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) ![CircleCI](https://img.shields.io/badge/circle%20ci-%23161616.svg?style=for-the-badge&logo=circleci&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB Atlas account (or local MongoDB)
+- Git
 
-## Key Features and Challenges
+### Installation
 
--   Maintained session consistency with **Express Session** and **MongoDB**.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ark5234/Multiplayer-Ludo.git
+   cd Multiplayer-Ludo
+   ```
 
--   Enabled real-time communication via **WebSocket** and **SocketIO**.
+2. **Install dependencies**
+   ```bash
+   # Install frontend dependencies
+   npm install
+   
+   # Install backend dependencies
+   cd backend
+   npm install
+   ```
 
--   Maintained code reliability by implementing unit and integration tests using **Mocha**, **Chai**, and **Jest**.
+3. **Setup Environment**
+   ```bash
+   # Copy environment template
+   cp backend/.env.example backend/.env
+   
+   # Edit .env file and add your MongoDB connection string
+   # CONNECTION_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+   ```
 
--   Implemented E2E tests utilizing **Cypress**, addressing challenges related to [testing collaboration](https://docs.cypress.io/guides/references/trade-offs#Multiple-browsers-open-at-the-same-time) and canvas functionality in the application.
+4. **Run the application**
+   ```bash
+   # Terminal 1: Start backend server
+   cd backend
+   npm start
+   # or
+   node server.js
+   
+   # Terminal 2: Start frontend development server
+   cd ..
+   npm start
+   ```
 
--   Established a CI/CD pipeline using **CircleCI**, with pushing **Docker** container to **AWS ECR** and deploying to **AWS ECS**
+5. **Access the game**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8080
 
-
-## Installation
-
-1.  Download this repository
-
-2.  Generate your own [mongoDB atlas](https://www.mongodb.com) credential URL. It should looks like this:
+## 📁 Project Structure
 
 ```
-
-mongodb+srv://madmin:<password>@clustername.mongodb.net/<dbname>?retryWrites=true&w=majority
-
+Multiplayer-Ludo/
+├── 📁 backend/
+│   ├── 📁 handlers/          # Socket.IO event handlers
+│   ├── 📁 models/            # MongoDB schemas (enhanced with scoring)
+│   ├── 📁 services/          # Business logic & scoring service
+│   ├── 📁 socket/            # WebSocket management
+│   └── 📁 config/            # Database & session configuration
+├── 📁 src/
+│   ├── 📁 components/
+│   │   ├── 📁 Scoreboard/    # 🆕 Live scoring display
+│   │   ├── 📁 WinnerOverlay/ # 🆕 Enhanced winner screen
+│   │   ├── 📁 Gameboard/     # Main game interface
+│   │   └── 📁 ...           # Other game components
+│   └── 📁 hooks/            # Custom React hooks
+├── 📄 SCORING_SYSTEM.md     # 🆕 Detailed implementation guide
+└── 📄 README.md             # This file
 ```
 
-3.  Add this URL to the /backend/.env file (refer to .env.example)
+## 🎨 Screenshots
 
-4.  Perform these commands in the main directory:
-
+### Live Scoreboard
+The real-time scoreboard shows current standings, scores, and capture counts:
 ```
-npm i
-npm start
-cd backend
-npm i
-node server.js
+┌─────────────────────────┐
+│       Live Scores       │
+├─────────────────────────┤
+│ 🔴 Red     👑  45 pts   │
+│ 🔵 Blue       32 pts    │
+│ 🟢 Green      28 pts    │
+│ 🟡 Yellow     15 pts    │
+├─────────────────────────┤
+│ Updates in real-time    │
+└─────────────────────────┘
 ```
 
-## Screenshots
+### Winner Screen
+Enhanced final standings with complete statistics and rankings.
 
-![Interface](https://github.com/Wenszel/mern-ludo/blob/main/src/images/readme1.png?raw=true)
+## 🔧 Technical Implementation
 
-![Interface](https://github.com/Wenszel/mern-ludo/blob/main/src/images/lobby.png?raw=true)
+### Backend Enhancements
+- **Scoring Service**: Modular scoring logic separate from core game mechanics
+- **Enhanced Models**: Pawn and Room models extended with scoring capabilities
+- **Real-time Events**: New WebSocket events for score updates
+- **Winner Logic**: Score-based winner determination with tie-breaking
 
-![Interface](https://github.com/Wenszel/mern-ludo/blob/main/src/images/winner.png?raw=true)
+### Frontend Components
+- **Scoreboard Component**: Live score display with professional UI
+- **Winner Overlay**: Complete final standings screen
+- **Real-time Updates**: Automatic score refreshing via WebSocket events
+
+## 🎯 Game Flow with Scoring
+
+1. **Game Start**: All pawns begin with 0 points
+2. **Movement**: Each pawn move adds dice value to pawn's score
+3. **Captures**: Attacking pawn steals all points from captured pawn
+4. **Real-time Updates**: Scoreboard updates instantly for all players
+5. **Win Conditions**: 
+   - Traditional: First player to get all 4 pawns home
+   - Score-based: Highest total score when timer ends
+6. **Final Screen**: Complete standings with statistics
+
+## 📊 Performance & Scalability
+
+- **Real-time Communication**: Optimized WebSocket events
+- **Efficient Updates**: Only changed data is transmitted
+- **Responsive UI**: Smooth animations without performance impact
+- **Scalable Architecture**: Modular design supports easy feature additions
+
+## 🛡 Technology Stack
+
+- **Frontend**: React.js, CSS3, Socket.IO Client
+- **Backend**: Node.js, Express.js, Socket.IO
+- **Database**: MongoDB with Mongoose ODM
+- **Real-time**: WebSocket communication
+- **Session Management**: Express sessions with MongoDB store
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🎉 Acknowledgments
+
+- Original Ludo game implementation by [Wenszel](https://github.com/Wenszel/mern-ludo)
+- Enhanced with real-time scoring system and modern UI improvements
+- Built as part of QreateAI Full Stack Developer hiring process
+
+## 📧 Contact
+
+- **Developer**: [Your GitHub](https://github.com/ark5234)
+- **Repository**: [Multiplayer-Ludo](https://github.com/ark5234/Multiplayer-Ludo)
+- **Issues**: [Report bugs or request features](https://github.com/ark5234/Multiplayer-Ludo/issues)
+
+---
+
+<p align="center">
+  <b>🎲 Ready to play? Clone, setup, and enjoy the enhanced Ludo experience! 🎲</b>
+</p>
