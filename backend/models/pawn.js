@@ -6,6 +6,7 @@ const PawnSchema = new Schema({
     color: String,
     basePos: Number,
     position: Number,
+    score: { type: Number, default: 0 },
 });
 
 PawnSchema.methods.canMove = function (rolledNumber) {
@@ -77,6 +78,18 @@ PawnSchema.methods.getPositionAfterMove = function (rolledNumber) {
                 return position;
             }
     }
+};
+
+PawnSchema.methods.updateScore = function (stepsMoved) {
+    this.score += stepsMoved;
+};
+
+PawnSchema.methods.resetScore = function () {
+    this.score = 0;
+};
+
+PawnSchema.methods.getScore = function () {
+    return this.score;
 };
 
 module.exports = PawnSchema;

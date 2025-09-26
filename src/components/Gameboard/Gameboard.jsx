@@ -4,9 +4,8 @@ import { PlayerDataContext, SocketContext } from '../../App';
 import useSocketData from '../../hooks/useSocketData';
 import Map from './Map/Map';
 import Navbar from '../Navbar/Navbar';
-import Overlay from '../Overlay/Overlay';
-import styles from './Gameboard.module.css';
-import trophyImage from '../../images/trophy.webp';
+import Scoreboard from '../Scoreboard/Scoreboard';
+import WinnerOverlay from '../WinnerOverlay/WinnerOverlay';
 
 const Gameboard = () => {
     const socket = useContext(SocketContext);
@@ -76,20 +75,16 @@ const Gameboard = () => {
                         ended={winner !== null}
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
+                    {started && <Scoreboard />}
                 </div>
             ) : (
                 <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />
             )}
             {winner ? (
-                <Overlay>
-                    <div className={styles.winnerContainer}>
-                        <img src={trophyImage} alt='winner' />
-                        <h1>
-                            1st: <span style={{ color: winner }}>{winner}</span>
-                        </h1>
-                        <button onClick={() => socket.emit('player:exit')}>Play again</button>
-                    </div>
-                </Overlay>
+                <WinnerOverlay 
+                    winner={winner}
+                    onPlayAgain={() => socket.emit('player:exit')}
+                />
             ) : null}
         </>
     );

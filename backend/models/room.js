@@ -16,6 +16,7 @@ const RoomSchema = new mongoose.Schema({
     rolledNumber: Number,
     players: [PlayerSchema],
     winner: { type: String, default: null },
+    playerScores: { type: Object, default: {} },
     pawns: {
         type: [PawnSchema],
         default: () => {
@@ -24,6 +25,7 @@ const RoomSchema = new mongoose.Schema({
                 let pawn = {};
                 pawn.basePos = i;
                 pawn.position = i;
+                pawn.score = 0; // Initialize score
                 if (i < 4) pawn.color = COLORS[0];
                 else if (i < 8) pawn.color = COLORS[1];
                 else if (i < 12) pawn.color = COLORS[2];
@@ -36,10 +38,20 @@ const RoomSchema = new mongoose.Schema({
 });
 
 RoomSchema.methods.beatPawns = function (position, attackingPawnColor) {
+    const { handleCaptureScoring } = require('../services/scoringService');
     const pawnsOnPosition = this.pawns.filter(pawn => pawn.position === position);
+    const attackingPawns = pawnsOnPosition.filter(pawn => pawn.color === attackingPawnColor);
+    
     pawnsOnPosition.forEach(pawn => {
         if (pawn.color !== attackingPawnColor) {
             const index = this.getPawnIndex(pawn._id);
+            
+            // Handle scoring for capture
+            if (attackingPawns.length > 0) {
+                handleCaptureScoring(attackingPawns[0], pawn);
+            }
+            
+            // Reset position to base
             this.pawns[index].position = this.pawns[index].basePos;
         }
     });
@@ -61,9 +73,19 @@ RoomSchema.methods.changeMovingPlayer = function () {
 };
 
 RoomSchema.methods.movePawn = function (pawn) {
+    const { updatePawnScoreAfterMove } = require('../services/scoringService');
     const newPositionOfMovedPawn = pawn.getPositionAfterMove(this.rolledNumber);
+    
+    // Update pawn score based on steps moved (dice roll value)
+    if (newPositionOfMovedPawn !== pawn.position) {
+        updatePawnScoreAfterMove(pawn, this.rolledNumber);
+    }
+    
     this.changePositionOfPawn(pawn, newPositionOfMovedPawn);
     this.beatPawns(newPositionOfMovedPawn, pawn.color);
+    
+    // Update player scores after move
+    this.updatePlayerScores();
 };
 
 RoomSchema.methods.getPawnsThatCanMove = function () {
@@ -86,6 +108,10 @@ RoomSchema.methods.startGame = function () {
     this.nextMoveTime = Date.now() + MOVE_TIME;
     this.players.forEach(player => (player.ready = true));
     this.players[0].nowMoving = true;
+    
+    // Initialize and send initial scores
+    this.updatePlayerScores();
+    
     timeoutManager.set(makeRandomMove, MOVE_TIME, this._id.toString());
 };
 
@@ -112,6 +138,11 @@ RoomSchema.methods.getWinner = function () {
         return 'yellow';
     }
     return null;
+};
+
+RoomSchema.methods.getWinnerByScore = function () {
+    const { determineWinner } = require('../services/scoringService');
+    return determineWinner(this);
 };
 
 RoomSchema.methods.isFull = function () {
@@ -149,6 +180,20 @@ RoomSchema.methods.getPlayerPawns = function (color) {
 
 RoomSchema.methods.getCurrentlyMovingPlayer = function () {
     return this.players.find(player => player.nowMoving === true);
+};
+
+RoomSchema.methods.updatePlayerScores = function () {
+    const { getAllPlayerScores } = require('../services/scoringService');
+    this.playerScores = getAllPlayerScores(this);
+};
+
+RoomSchema.methods.getPlayerScores = function () {
+    return this.playerScores;
+};
+
+RoomSchema.methods.getFormattedScores = function () {
+    const { formatScoresForClient } = require('../services/scoringService');
+    return formatScoresForClient(this);
 };
 
 const Room = mongoose.model('Room', RoomSchema);

@@ -1,5 +1,5 @@
 const { getRooms, getRoom, updateRoom, createNewRoom } = require('../services/roomService');
-const { sendToOnePlayerRooms, sendToOnePlayerData, sendWinner } = require('../socket/emits');
+const { sendToOnePlayerRooms, sendToOnePlayerData, sendWinner, sendScoreUpdate } = require('../socket/emits');
 
 module.exports = socket => {
     const req = socket.request;
@@ -14,6 +14,12 @@ module.exports = socket => {
         }
         sendToOnePlayerData(socket.id, room);
         if (room.winner) sendWinner(socket.id, room.winner);
+        
+        // Send current scores if game has started
+        if (room.started) {
+            const formattedScores = room.getFormattedScores();
+            socket.emit('game:scores', formattedScores);
+        }
     };
 
     const handleGetAllRooms = async () => {

@@ -1,5 +1,5 @@
 const Room = require('../models/room');
-const { sendToPlayersData } = require('../socket/emits');
+const { sendToPlayersData, sendScoreUpdate } = require('../socket/emits');
 
 const getRoom = async roomId => {
     return await Room.findOne({ _id: roomId }).exec();
@@ -24,7 +24,14 @@ const createNewRoom = async data => {
 };
 
 Room.watch().on('change', async data => {
-    sendToPlayersData(await getRoom(data.documentKey._id));
+    const room = await getRoom(data.documentKey._id);
+    sendToPlayersData(room);
+    
+    // Send score updates if the game has started
+    if (room && room.started) {
+        const formattedScores = room.getFormattedScores();
+        sendScoreUpdate(room._id.toString(), formattedScores);
+    }
 });
 
 module.exports = { getRoom, getRooms, updateRoom, getJoinableRoom, createNewRoom };

@@ -1,5 +1,5 @@
 const { getRoom, updateRoom } = require('../services/roomService');
-const { sendToPlayersRolledNumber, sendWinner } = require('../socket/emits');
+const { sendToPlayersRolledNumber, sendWinner, sendScoreUpdate } = require('../socket/emits');
 const { rollDice, isMoveValid } = require('./handlersFunctions');
 
 module.exports = socket => {
@@ -10,10 +10,14 @@ module.exports = socket => {
         if (room.winner) return;
         const pawn = room.getPawn(pawnId);
         if (isMoveValid(req.session, pawn, room)) {
-            const newPositionOfMovedPawn = pawn.getPositionAfterMove(room.rolledNumber);
-            room.changePositionOfPawn(pawn, newPositionOfMovedPawn);
-            room.beatPawns(newPositionOfMovedPawn, req.session.color);
+            // Use the updated movePawn method which handles scoring
+            room.movePawn(pawn);
             room.changeMovingPlayer();
+            
+            // Send real-time score update
+            const formattedScores = room.getFormattedScores();
+            sendScoreUpdate(room._id.toString(), formattedScores);
+            
             const winner = room.getWinner();
             if (winner) {
                 room.endGame(winner);
