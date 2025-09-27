@@ -1,19 +1,18 @@
-FROM node:14 as frontend
+# This is a legacy Dockerfile - use docker-compose.yml for full application
+# For standalone frontend-only build:
+
+FROM node:18-alpine as build
 WORKDIR /app
-COPY . /app
-RUN npm install --production
+COPY package*.json ./
+RUN npm ci
+COPY . .
 RUN npm run build
 
-FROM node:14 as backend
-WORKDIR /app
-COPY /backend /app
-RUN npm install
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 3000
+CMD ["nginx", "-g", "daemon off;"]
 
-FROM node:14
-WORKDIR /app
-COPY --from=backend /app /app/
-COPY --from=frontend /app/build /app/build
-
-EXPOSE 8080
-
-CMD ["npm", "run", "start"]
+# For full application deployment, use:
+# docker-compose up -d

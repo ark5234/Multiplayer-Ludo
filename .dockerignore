@@ -1,23 +1,57 @@
-# Include any files or directories that you don't want to be copied to your
-# container here (e.g., local build artifacts, temporary files, etc.).
-#
-# For more help, visit the .dockerignore file reference guide at
-# https://docs.docker.com/engine/reference/builder/#dockerignore-file
+# Docker ignore file for Multiplayer Ludo
 
-**/.classpath
-**/.dockerignore
-**/.env
-**/.git
-**/.gitignore
-**/.project
-**/.settings
-**/.toolstarget
-**/.vs
-**/.vscode
-**/.next
-**/.cache
-**/*.*proj.user
-**/*.dbmdl
+# Node modules
+node_modules
+backend/node_modules
+npm-debug.log*
+
+# Build outputs
+build/
+dist/
+
+# Environment files (use .env.docker instead)
+.env
+backend/.env
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+.toolstarget
+.vs
+.project
+.settings
+*.classpath
+*.*proj.user
+*.dbmdl
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+
+# Documentation
+README.md
+DEPLOYMENT.md
+IMPLEMENTATION_SUMMARY.md
+SCORING_SYSTEM.md
+
+# Production scripts (not needed in container)
+start-production.*
+docker-ludo.*
+
+# Cache
+.cache
+.next
 **/*.jfm
 **/charts
 **/docker-compose*
