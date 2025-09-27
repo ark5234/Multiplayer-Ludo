@@ -6,6 +6,7 @@ module.exports = socket => {
 
     const handleLogin = async data => {
         const room = await getRoom(data.roomId);
+        if (!room) return socket.emit('error:roomNotFound');
         if (room.isFull()) return socket.emit('error:changeRoom');
         if (room.started) return socket.emit('error:changeRoom');
         if (room.private && room.password !== data.password) return socket.emit('error:wrongPassword');
@@ -22,7 +23,12 @@ module.exports = socket => {
 
     const handleReady = async () => {
         const room = await getRoom(req.session.roomId);
-        room.getPlayer(req.session.playerId).changeReadyStatus();
+        if (!room) return socket.emit('error:roomNotFound');
+        
+        const player = room.getPlayer(req.session.playerId);
+        if (!player) return socket.emit('error:playerNotFound');
+        
+        player.changeReadyStatus();
         if (room.canStartGame()) {
             room.startGame();
         }

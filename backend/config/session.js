@@ -11,11 +11,11 @@ const sessionMiddleware = session({
     cookie: {
         httpOnly: false,
         secure: false,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours instead of 20 seconds
     },
-    secret: 'secret',
+    secret: process.env.SESSION_SECRET || 'ludo-default-secret-change-in-production',
     saveUninitialized: true,
-    resave: true,
-    maxAge: 20000,
+    resave: false, // Don't save session if unmodified
 });
 
 const wrap = expressMiddleware => (socket, next) => expressMiddleware(socket.request, {}, next);

@@ -7,6 +7,7 @@ module.exports = socket => {
 
     const handleMovePawn = async pawnId => {
         const room = await getRoom(req.session.roomId);
+        if (!room) return;
         if (room.winner) return;
         const pawn = room.getPawn(pawnId);
         if (isMoveValid(req.session, pawn, room)) {
@@ -35,11 +36,13 @@ module.exports = socket => {
         sendToPlayersRolledNumber(req.session.roomId, rolledNumber);
         const room = await updateRoom({ _id: req.session.roomId, rolledNumber: rolledNumber });
         
+        if (!room) return;
+        
         // Manually send room data update
         sendToPlayersData(room);
         
         const player = room.getPlayer(req.session.playerId);
-        if (!player.canMove(room, rolledNumber)) {
+        if (player && !player.canMove(room, rolledNumber)) {
             room.changeMovingPlayer();
             const updatedRoom = await updateRoom(room);
             sendToPlayersData(updatedRoom);
