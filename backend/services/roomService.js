@@ -23,15 +23,27 @@ const createNewRoom = async data => {
     return room;
 };
 
-Room.watch().on('change', async data => {
-    const room = await getRoom(data.documentKey._id);
-    sendToPlayersData(room);
-    
-    // Send score updates if the game has started
-    if (room && room.started) {
-        const formattedScores = room.getFormattedScores();
-        sendScoreUpdate(room._id.toString(), formattedScores);
-    }
-});
+// Only set up change streams if MongoDB supports it (replica sets)
+// For development with local MongoDB, we'll use manual updates instead
+// Uncomment below if you're using MongoDB Atlas or replica sets
+/*
+try {
+    Room.watch().on('change', async data => {
+        const room = await getRoom(data.documentKey._id);
+        sendToPlayersData(room);
+        
+        // Send score updates if the game has started
+        if (room && room.started) {
+            const formattedScores = room.getFormattedScores();
+            sendScoreUpdate(room._id.toString(), formattedScores);
+        }
+    });
+} catch (error) {
+    console.log('Change streams not supported - using manual updates instead');
+    // This is fine for development - we'll trigger updates manually
+}
+*/
+
+console.log('Room service initialized - using manual updates for room changes');
 
 module.exports = { getRoom, getRooms, updateRoom, getJoinableRoom, createNewRoom };

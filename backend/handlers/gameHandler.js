@@ -1,5 +1,5 @@
 const { getRoom, updateRoom } = require('../services/roomService');
-const { sendToPlayersRolledNumber, sendWinner, sendScoreUpdate } = require('../socket/emits');
+const { sendToPlayersRolledNumber, sendWinner, sendScoreUpdate, sendToPlayersData } = require('../socket/emits');
 const { rollDice, isMoveValid } = require('./handlersFunctions');
 
 module.exports = socket => {
@@ -23,7 +23,10 @@ module.exports = socket => {
                 room.endGame(winner);
                 sendWinner(room._id.toString(), winner);
             }
-            await updateRoom(room);
+            
+            // Update and manually send room data since change streams might not be available
+            const updatedRoom = await updateRoom(room);
+            sendToPlayersData(updatedRoom);
         }
     };
 
@@ -31,10 +34,15 @@ module.exports = socket => {
         const rolledNumber = rollDice();
         sendToPlayersRolledNumber(req.session.roomId, rolledNumber);
         const room = await updateRoom({ _id: req.session.roomId, rolledNumber: rolledNumber });
+        
+        // Manually send room data update
+        sendToPlayersData(room);
+        
         const player = room.getPlayer(req.session.playerId);
         if (!player.canMove(room, rolledNumber)) {
             room.changeMovingPlayer();
-            await updateRoom(room);
+            const updatedRoom = await updateRoom(room);
+            sendToPlayersData(updatedRoom);
         }
     };
 
