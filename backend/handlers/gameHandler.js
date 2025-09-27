@@ -10,9 +10,23 @@ module.exports = socket => {
         if (!room) return;
         if (room.winner) return;
         const pawn = room.getPawn(pawnId);
+        const player = room.getPlayer(req.session.playerId);
+        
         if (isMoveValid(req.session, pawn, room)) {
+            const oldPosition = pawn.position;
+            
             // Use the updated movePawn method which handles scoring
             room.movePawn(pawn);
+            
+            // Emit move event for activity feed
+            const io = require('../socket/socketManager').getIO();
+            io.to(room._id.toString()).emit('game:move', {
+                playerColor: player.color,
+                pawnId: pawn._id,
+                fromPosition: oldPosition,
+                toPosition: pawn.position
+            });
+            
             room.changeMovingPlayer();
             
             // Send real-time score update
@@ -33,19 +47,28 @@ module.exports = socket => {
 
     const handleRollDice = async () => {
         const rolledNumber = rollDice();
-        sendToPlayersRolledNumber(req.session.roomId, rolledNumber);
-        const room = await updateRoom({ _id: req.session.roomId, rolledNumber: rolledNumber });
-        
+        const room = await getRoom(req.session.roomId);
         if (!room) return;
         
-        // Manually send room data update
-        sendToPlayersData(room);
-        
         const player = room.getPlayer(req.session.playerId);
-        if (player && !player.canMove(room, rolledNumber)) {
-            room.changeMovingPlayer();
-            const updatedRoom = await updateRoom(room);
-            sendToPlayersData(updatedRoom);
+        
+        // Emit roll event for activity feed
+        const io = require('../socket/socketManager').getIO();
+        io.to(room._id.toString()).emit('game:roll', {
+            playerColor: player.color,
+            rolledNumber: rolledNumber
+        });
+        
+        sendToPlayersRolledNumber(req.session.roomId, rolledNumber);
+        const updatedRoom = await updateRoom({ _id: req.session.roomId, rolledNumber: rolledNumber });
+        
+        // Manually send room data update
+        sendToPlayersData(updatedRoom);
+        
+        if (player && !player.canMove(updatedRoom, rolledNumber)) {
+            updatedRoom.changeMovingPlayer();
+            const finalRoom = await updateRoom(updatedRoom);
+            sendToPlayersData(finalRoom);
         }
     };
 

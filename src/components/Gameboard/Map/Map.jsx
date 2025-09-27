@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext, useCallback } from 'react';
 import { PlayerDataContext, SocketContext } from '../../../App';
 
 import mapImage from '../../../images/map.jpg';
@@ -13,18 +13,63 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
     const canvasRef = useRef(null);
 
     const [hintPawn, setHintPawn] = useState();
+    const [animatingPawn, setAnimatingPawn] = useState(null);
+    const [previousPawns, setPreviousPawns] = useState([]);
 
-    const paintPawn = (context, pawn) => {
+    // Detect pawn movement for animation
+    useEffect(() => {
+        if (previousPawns.length > 0) {
+            pawns.forEach(currentPawn => {
+                const prevPawn = previousPawns.find(p => p._id === currentPawn._id);
+                if (prevPawn && prevPawn.position !== currentPawn.position) {
+                    // Pawn moved - trigger animation
+                    setAnimatingPawn({
+                        ...currentPawn,
+                        fromPosition: prevPawn.position,
+                        toPosition: currentPawn.position
+                    });
+                    
+                    // Clear animation after 1 second
+                    setTimeout(() => setAnimatingPawn(null), 1000);
+                }
+            });
+        }
+        setPreviousPawns([...pawns]);
+    }, [pawns]);
+
+    const paintPawn = useCallback((context, pawn, isAnimating = false) => {
         const { x, y } = positionMapCoords[pawn.position];
         const touchableArea = new Path2D();
         touchableArea.arc(x, y, 12, 0, 2 * Math.PI);
         const image = new Image();
         image.src = pawnImages[pawn.color];
+        
         image.onload = function () {
-            context.drawImage(image, x - 17, y - 15, 35, 30);
+            // Add animation effects
+            if (isAnimating) {
+                context.save();
+                context.shadowColor = pawn.color;
+                context.shadowBlur = 15;
+                context.globalAlpha = 0.9;
+            }
+            
+            // Add glow effect for moving pawns
+            if (pawn.nowMoving && pawn.color === player.color) {
+                context.save();
+                context.shadowColor = '#ffff00';
+                context.shadowBlur = 10;
+                context.drawImage(image, x - 17, y - 15, 35, 30);
+                context.restore();
+            } else {
+                context.drawImage(image, x - 17, y - 15, 35, 30);
+            }
+            
+            if (isAnimating) {
+                context.restore();
+            }
         };
         return touchableArea;
-    };
+    }, [player.color]);
 
     const handleCanvasClick = event => {
         const canvas = canvasRef.current;
@@ -75,7 +120,8 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             image.onload = function () {
                 ctx.drawImage(image, 0, 0);
                 pawns.forEach((pawn, index) => {
-                    pawns[index].touchableArea = paintPawn(ctx, pawn);
+                    const isMovingPawn = animatingPawn && animatingPawn._id === pawn._id;
+                    pawns[index].touchableArea = paintPawn(ctx, pawn, isMovingPawn);
                 });
                 if (hintPawn) {
                     paintPawn(ctx, hintPawn);
@@ -83,7 +129,7 @@ const Map = ({ pawns, nowMoving, rolledNumber }) => {
             };
         };
         rerenderCanvas();
-    }, [hintPawn, pawns]);
+    }, [hintPawn, pawns, animatingPawn, paintPawn]);
 
     return (
         <canvas

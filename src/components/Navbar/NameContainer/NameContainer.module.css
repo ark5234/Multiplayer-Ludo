@@ -1,13 +1,35 @@
 .container {
     position: relative;
-    min-width: 100px;
-    min-height: 50px;
+    min-width: 120px;
+    min-height: 60px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border: 2px solid white;
-    border-radius: 5px;
+    border-radius: 10px;
     color: white;
     font-weight: bold;
     text-align: center;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+}
+
+.container p {
+    margin: 2px 0;
+    font-size: 14px;
+}
+
+.status {
+    display: block;
+    font-size: 10px;
+    opacity: 0.8;
+    margin-top: 2px;
+    font-weight: normal;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }

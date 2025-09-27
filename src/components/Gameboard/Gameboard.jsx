@@ -6,6 +6,7 @@ import Map from './Map/Map';
 import Navbar from '../Navbar/Navbar';
 import Scoreboard from '../Scoreboard/Scoreboard';
 import WinnerOverlay from '../WinnerOverlay/WinnerOverlay';
+import GameActivity from '../GameActivity/GameActivity';
 
 const Gameboard = () => {
     const socket = useContext(SocketContext);
@@ -76,6 +77,7 @@ const Gameboard = () => {
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
                     {started && <Scoreboard />}
+                    {started && <GameActivity />}
                     {!started && players.length > 0 && (
                         <div style={{
                             position: 'absolute',

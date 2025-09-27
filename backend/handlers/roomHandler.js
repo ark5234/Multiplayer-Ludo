@@ -1,5 +1,6 @@
 const { getRooms, getRoom, updateRoom, createNewRoom } = require('../services/roomService');
 const { sendToOnePlayerRooms, sendToOnePlayerData, sendWinner, sendScoreUpdate } = require('../socket/emits');
+const Room = require('../models/room');
 
 module.exports = socket => {
     const req = socket.request;
@@ -39,7 +40,40 @@ module.exports = socket => {
         sendToOnePlayerRooms(socket.id, await getRooms());
     };
 
+    const handleDeleteRoom = async (roomId) => {
+        try {
+            const room = await getRoom(roomId);
+            if (room) {
+                // Notify all players in the room
+                socket.to(roomId).emit('room:deleted', { message: 'Room has been deleted' });
+                // Remove the room
+                await Room.findByIdAndDelete(roomId);
+                // Update room list for all clients
+                sendToOnePlayerRooms(socket.id, await getRooms());
+            }
+        } catch (error) {
+            console.error('Error deleting room:', error);
+        }
+    };
+
+    const handleKickPlayer = async ({ roomId, playerId }) => {
+        try {
+            const room = await getRoom(roomId);
+            if (room) {
+                // Remove player from room
+                room.players = room.players.filter(p => p._id.toString() !== playerId);
+                await updateRoom(room);
+                // Notify the kicked player
+                socket.to(roomId).emit('player:kicked', { playerId });
+            }
+        } catch (error) {
+            console.error('Error kicking player:', error);
+        }
+    };
+
     socket.on('room:data', handleGetData);
     socket.on('room:rooms', handleGetAllRooms);
     socket.on('room:create', handleCreateRoom);
+    socket.on('room:delete', handleDeleteRoom);
+    socket.on('room:kick', handleKickPlayer);
 };

@@ -1,0 +1,140 @@
+.container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 250px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #2196F3;
+    border-radius: 10px;
+    color: white;
+    font-family: Arial, sans-serif;
+    z-index: 100;
+    padding: 15px;
+}
+
+.header {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.header h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #2196F3;
+}
+
+.onlineStatus {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.playersList {
+    margin-bottom: 15px;
+}
+
+.playerItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.playerItem:last-child {
+    border-bottom: none;
+}
+
+.playerName {
+    font-size: 14px;
+}
+
+.playerName.offline {
+    color: #888;
+    text-decoration: line-through;
+}
+
+.kickButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px;
+}
+
+.kickButton:hover {
+    transform: scale(1.2);
+}
+
+.actions {
+    text-align: center;
+}
+
+.deleteButton {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.deleteButton:hover {
+    background: #d32f2f;
+}
+
+.confirmOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmDialog {
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 300px;
+}
+
+.confirmDialog h4 {
+    margin: 0 0 10px 0;
+    color: #f44336;
+}
+
+.confirmDialog p {
+    margin: 0 0 20px 0;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.confirmButtons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.confirmDelete {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancelDelete {
+    background: #666;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
