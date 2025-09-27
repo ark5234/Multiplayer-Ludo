@@ -1,0 +1,14 @@
+{
+  "eslint.workingDirectories": [
+    {
+      "directory": "./mongo-init",
+      "changeProcessCWD": true
+    }
+  ],
+  "files.associations": {
+    "mongo-init/*.js": "javascript"
+  },
+  "eslint.options": {
+    "overrideConfigFile": "./mongo-init/.eslintrc.json"
+  }
+}

@@ -24,4 +24,5 @@ db.rooms.createIndex({ "createDate": 1 });
 db.rooms.createIndex({ "started": 1 });
 
 // Log completion (MongoDB shell function)
+// eslint-disable-next-line no-restricted-syntax
 print('MongoDB initialization complete for Multiplayer Ludo');

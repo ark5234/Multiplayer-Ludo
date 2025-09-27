@@ -1,9 +1,16 @@
 {
   "env": {
-    "mongo": true
+    "mongo": true,
+    "browser": false,
+    "node": false
   },
   "globals": {
     "db": "readonly",
     "print": "readonly"
+  },
+  "rules": {
+    "no-undef": "off",
+    "no-global-assign": "off",
+    "no-restricted-globals": "off"
   }
 }
