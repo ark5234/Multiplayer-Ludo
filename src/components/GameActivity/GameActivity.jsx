@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { SocketContext } from '../../App';
 import styles from './GameActivity.module.css';
 
@@ -28,7 +28,15 @@ const GameActivity = () => {
             try {
                 const roomData = JSON.parse(roomDataString);
                 setCurrentRoom(roomData);
-                console.log('Room data updated:', roomData); // Debug log
+                console.log('Room data updated in GameActivity:', roomData); // Debug log
+                
+                // Force re-render of activities when room data changes
+                if (roomData && roomData.players) {
+                    // Trigger a small delay to ensure state is updated
+                    setTimeout(() => {
+                        console.log('Current room state after update:', currentRoom);
+                    }, 100);
+                }
             } catch (e) {
                 console.error('Error parsing room data:', e);
             }
@@ -42,7 +50,7 @@ const GameActivity = () => {
 
         // Enhanced dice roll tracking
         const handleDiceRoll = (data) => {
-            console.log('Dice roll event received:', data); // Debug log
+            console.log('Dice roll event received:', data, 'Current room:', currentRoom); // Debug log
             
             let playerColor = 'Player';
             let rolledNumber = null;
@@ -50,8 +58,14 @@ const GameActivity = () => {
             if (typeof data === 'number') {
                 // Original format - just the dice number
                 rolledNumber = data;
-                if (currentRoom && currentRoom.movingPlayer !== undefined) {
-                    playerColor = getPlayerColorByIndex(currentRoom.movingPlayer);
+                if (currentRoom && currentRoom.movingPlayer !== undefined && currentRoom.players) {
+                    const movingPlayerData = currentRoom.players[currentRoom.movingPlayer];
+                    if (movingPlayerData && movingPlayerData.color) {
+                        playerColor = movingPlayerData.color;
+                    } else {
+                        playerColor = getPlayerColorByIndex(currentRoom.movingPlayer);
+                    }
+                    console.log('Determined player color from room data:', playerColor, 'Moving player index:', currentRoom.movingPlayer);
                 }
             } else if (data && typeof data === 'object') {
                 // New format with detailed info
@@ -60,14 +74,20 @@ const GameActivity = () => {
                     rolledNumber = data.rolledNumber;
                 } else if (data.rolledNumber !== undefined) {
                     rolledNumber = data.rolledNumber;
-                    if (currentRoom && currentRoom.movingPlayer !== undefined) {
-                        playerColor = getPlayerColorByIndex(currentRoom.movingPlayer);
+                    if (currentRoom && currentRoom.movingPlayer !== undefined && currentRoom.players) {
+                        const movingPlayerData = currentRoom.players[currentRoom.movingPlayer];
+                        if (movingPlayerData && movingPlayerData.color) {
+                            playerColor = movingPlayerData.color;
+                        } else {
+                            playerColor = getPlayerColorByIndex(currentRoom.movingPlayer);
+                        }
                     }
                 }
             }
 
             if (rolledNumber !== null) {
                 addActivity(`🎲 ${playerColor} rolled ${rolledNumber}`);
+                console.log('Added dice roll activity:', `🎲 ${playerColor} rolled ${rolledNumber}`);
             }
         };
 
@@ -126,7 +146,7 @@ const GameActivity = () => {
             socket.off('player:joined');
             socket.off('player:left');
         };
-    }, [socket, currentRoom]);
+    }, [socket, currentRoom]); // Include currentRoom but handle it properly
 
     return (
         <div className={styles.container}>

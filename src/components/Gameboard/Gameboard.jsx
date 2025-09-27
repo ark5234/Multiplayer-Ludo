@@ -7,6 +7,8 @@ import Navbar from '../Navbar/Navbar';
 import Scoreboard from '../Scoreboard/Scoreboard';
 import WinnerOverlay from '../WinnerOverlay/WinnerOverlay';
 import GameActivity from '../GameActivity/GameActivity';
+import RoomManagement from '../RoomManagement/RoomManagement';
+import styles from './Gameboard.module.css';
 
 const Gameboard = () => {
     const socket = useContext(SocketContext);
@@ -48,71 +50,92 @@ const Gameboard = () => {
             setRolledNumber(data.rolledNumber);
             setPlayers(data.players);
             setPawns(data.pawns);
-            setTime(data.nextMoveTime);
             setStarted(data.started);
+            setTime(data.nextMoveTime);
+            setWinner(data.winner);
         });
 
-        socket.on('game:winner', winner => {
-            setWinner(winner);
-        });
-        socket.on('redirect', () => {
-            window.location.reload();
+        socket.on('player:timeout', () => {
+            setNowMoving(false);
         });
 
-    }, [socket, context.playerId, context.roomId, setRolledNumber]);
+        return () => {
+            socket.off('room:data');
+            socket.off('player:timeout');
+        };
+    }, [socket, context.roomId, context.playerId]);
+
+    if (!socket) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <ReactLoading type="spinningBubbles" color="white" height={200} width={200} />
+            </div>
+        );
+    }
 
     return (
         <>
-            {pawns.length === 16 ? (
-                <div className='container'>
-                    <Navbar
-                        players={players}
-                        started={started}
-                        time={time}
-                        isReady={isReady}
-                        movingPlayer={movingPlayer}
-                        rolledNumber={rolledNumber}
-                        nowMoving={nowMoving}
-                        ended={winner !== null}
-                    />
-                    <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
-                    {started && <Scoreboard />}
-                    {started && <GameActivity />}
-                    {!started && players.length > 0 && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            color: 'white',
-                            padding: '20px',
-                            borderRadius: '10px',
-                            textAlign: 'center',
-                            border: '2px solid white',
-                            zIndex: 10
-                        }}>
+            {players.length > 0 ? (
+                <div className={styles.gameContainer}>
+                    {/* Game Board Section */}
+                    <div className={styles.gameBoard}>
+                        <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
+                        <div className={styles.navbarContainer}>
+                            <Navbar
+                                players={players}
+                                started={started}
+                                time={time}
+                                isReady={isReady}
+                                rolledNumber={rolledNumber}
+                                nowMoving={nowMoving}
+                                movingPlayer={movingPlayer}
+                                ended={!!winner}
+                            />
+                        </div>
+                    </div>
+                    
+                    {/* Side Panel */}
+                    <div className={styles.sidePanel}>
+                        {started && <Scoreboard />}
+                        {started && <GameActivity />}
+                        {started && (
+                            <RoomManagement 
+                                roomData={{ 
+                                    players, 
+                                    name: 'Game Room',
+                                    _id: context.roomId
+                                }} 
+                                players={players} 
+                            />
+                        )}
+                    </div>
+                    
+                    {/* Waiting Overlay */}
+                    {!started && (
+                        <div className={styles.waitingOverlay}>
                             <h3>Waiting for Game to Start</h3>
                             <p>Players in room: {players.filter(p => p.name !== '...').length}/4</p>
                             <p>Ready players: {players.filter(p => p.ready).length}</p>
-                            <p style={{ marginTop: '15px', fontWeight: 'bold' }}>
+                            <p className={styles.readyMessage}>
                                 {!isReady ? 'Click the "Ready" switch below to join the game!' : 'Waiting for other players to get ready...'}
                             </p>
-                            <p style={{ fontSize: '14px', marginTop: '10px', opacity: '0.8' }}>
+                            <p className={styles.startHint}>
                                 Need at least 2 ready players to start
                             </p>
                         </div>
                     )}
                 </div>
             ) : (
-                <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                    <ReactLoading type="spinningBubbles" color="white" height={200} width={200} />
+                </div>
             )}
-            {winner ? (
+            {winner && (
                 <WinnerOverlay 
                     winner={winner}
                     onPlayAgain={() => socket.emit('player:exit')}
                 />
-            ) : null}
+            )}
         </>
     );
 };
