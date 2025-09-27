@@ -32,21 +32,25 @@ function App() {
         
         socket.on('connect', () => {
             console.log('Socket.IO connected successfully');
+            console.log('Socket ID:', socket.id);
             clearTimeout(connectionTimeout);
             setConnectionError(false);
         });
-        
+
         socket.on('connect_error', (error) => {
             console.error('Socket.IO connection error:', error);
             setConnectionError(true);
             clearTimeout(connectionTimeout);
         });
-        
+
         socket.on('disconnect', (reason) => {
             console.log('Socket.IO disconnected:', reason);
         });
-        
-        socket.on('player:data', data => {
+
+        // Debug: Log all socket events
+        socket.onAny((eventName, ...args) => {
+            console.log(`Socket event received: ${eventName}`, args);
+        });        socket.on('player:data', data => {
             console.log('Received player data:', data);
             data = JSON.parse(data);
             setPlayerData(data);
