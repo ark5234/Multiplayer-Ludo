@@ -9,18 +9,37 @@ const AddServer = () => {
     const socket = useContext(SocketContext);
     const [isPrivate, setIsPrivate] = useState(false);
     const [isIncorrect, setIsIncorrect] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const serverName = useInput('');
     const password = useInput('');
 
     const handleButtonClick = e => {
         e.preventDefault();
-        if (!serverName.value) setIsIncorrect(true);
-        else
-            socket.emit('room:create', {
-                name: serverName.value,
-                password: password.value,
-                private: isPrivate,
-            });
+        if (isSubmitting) return; // Prevent multiple submissions
+        
+        if (!serverName.value) {
+            setIsIncorrect(true);
+            return;
+        }
+        
+        setIsSubmitting(true);
+        setIsIncorrect(false);
+        
+        socket.emit('room:create', {
+            name: serverName.value,
+            password: password.value,
+            private: isPrivate,
+        });
+        
+        // Reset form after successful submission
+        serverName.setValue('');
+        password.setValue('');
+        setIsPrivate(false);
+        
+        // Re-enable button after a delay
+        setTimeout(() => {
+            setIsSubmitting(false);
+        }, 2000);
     };
 
     return (
@@ -41,7 +60,16 @@ const AddServer = () => {
                         <Switch checked={isPrivate} color='primary' onChange={() => setIsPrivate(!isPrivate)} />
                     </div>
                     <input type='text' placeholder='password' disabled={!isPrivate} {...password} />
-                    <button onClick={handleButtonClick}>Host</button>
+                    <button 
+                        onClick={handleButtonClick}
+                        disabled={isSubmitting}
+                        style={{
+                            backgroundColor: isSubmitting ? '#666' : '',
+                            cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                        }}
+                    >
+                        {isSubmitting ? 'Creating...' : 'Host'}
+                    </button>
                 </form>
             }
         />

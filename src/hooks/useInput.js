@@ -7,5 +7,6 @@ export default function useInput(initialValue = '') {
     return {
         value: value,
         onChange: handleChange,
+        setValue: setValue,
     };
 }
