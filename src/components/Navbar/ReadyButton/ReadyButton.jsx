@@ -14,7 +14,7 @@ const ReadyButton = ({ isReady }) => {
     return (
         <div className={styles.container}>
             <Switch onChange={handleCheckboxChange} checked={checked || false} />
-            <label>{checked ? 'I want to play' : 'Im waiting'}</label>
+            <label>{checked ? 'Ready to play!' : 'Click to join game'}</label>
         </div>
     );
 };

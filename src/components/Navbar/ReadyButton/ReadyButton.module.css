@@ -5,13 +5,23 @@
     margin: 10px;
     flex-direction: column;
     flex-flow: row-reverse;
-    background-color: grey;
+    background-color: #4CAF50;
     border-radius: 10px;
-    border: 2px solid white;
+    border: 3px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.container:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
 }
 .container > label {
     margin-left: 10px;
     margin-right: 10px;
-    width: 100px;
+    width: 120px;
     color: white;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
 }

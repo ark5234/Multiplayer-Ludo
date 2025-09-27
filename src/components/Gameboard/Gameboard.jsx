@@ -76,6 +76,31 @@ const Gameboard = () => {
                     />
                     <Map pawns={pawns} nowMoving={nowMoving} rolledNumber={rolledNumber} />
                     {started && <Scoreboard />}
+                    {!started && players.length > 0 && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            color: 'white',
+                            padding: '20px',
+                            borderRadius: '10px',
+                            textAlign: 'center',
+                            border: '2px solid white',
+                            zIndex: 10
+                        }}>
+                            <h3>Waiting for Game to Start</h3>
+                            <p>Players in room: {players.filter(p => p.name !== '...').length}/4</p>
+                            <p>Ready players: {players.filter(p => p.ready).length}</p>
+                            <p style={{ marginTop: '15px', fontWeight: 'bold' }}>
+                                {!isReady ? 'Click the "Ready" switch below to join the game!' : 'Waiting for other players to get ready...'}
+                            </p>
+                            <p style={{ fontSize: '14px', marginTop: '10px', opacity: '0.8' }}>
+                                Need at least 2 ready players to start
+                            </p>
+                        </div>
+                    )}
                 </div>
             ) : (
                 <ReactLoading type='spinningBubbles' color='white' height={667} width={375} />
