@@ -23,7 +23,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "prod": "npm run build && npm run serve-prod",
+    "serve-prod": "npx serve -s build -l 3000",
+    "start-prod-win": "start-production.bat",
+    "start-prod-unix": "./start-production.sh"
   },
   "eslintConfig": {
     "extends": [
@@ -32,7 +36,8 @@
     ]
   },
   "engines": {
-    "node": "10.16.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "browserslist": {
     "production": [
@@ -47,9 +52,9 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-private-property-in-object": "^7.16.7",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
-    "cypress": "^13.6.1",
-    "@babel/plugin-transform-private-property-in-object": "^7.16.7"
+    "cypress": "^13.6.1"
   }
 }
