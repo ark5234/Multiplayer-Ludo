@@ -1,0 +1,9 @@
+{
+  "env": {
+    "mongo": true
+  },
+  "globals": {
+    "db": "readonly",
+    "print": "readonly"
+  }
+}
