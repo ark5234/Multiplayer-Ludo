@@ -1,5 +1,4 @@
 module.exports = function (mongoose) {
-    mongoose.set('useFindAndModify', false);
     mongoose
         .connect(process.env.CONNECTION_URI, {
             useNewUrlParser: true,
