@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import ReactLoading from 'react-loading';
 import Gameboard from './components/Gameboard/Gameboard';
 import LoginPage from './components/LoginPage/LoginPage';
+import OfflineMode from './components/OfflineMode/OfflineMode';
 
 export const PlayerDataContext = createContext();
 export const SocketContext = createContext();
@@ -50,7 +51,32 @@ function App() {
         // Debug: Log all socket events
         socket.onAny((eventName, ...args) => {
             console.log(`Socket event received: ${eventName}`, args);
-        });        socket.on('player:data', data => {
+        });
+
+        // Enhanced error handling
+        socket.on('error:roomNotFound', (data) => {
+            console.error('Room not found error:', data);
+            alert('Room not found or has expired. Please create or join a new room.');
+            // Optionally redirect to home page
+            window.location.href = '/';
+        });
+
+        socket.on('error:noRoom', (data) => {
+            console.warn('No room in session:', data);
+            // This is normal for new users - they need to create or join a room
+        });
+
+        socket.on('error:changeRoom', () => {
+            console.error('Room is full or game has started');
+            alert('Room is full or game has already started. Please try another room.');
+        });
+
+        socket.on('error:wrongPassword', () => {
+            console.error('Wrong password for private room');
+            alert('Incorrect password for private room.');
+        });
+
+        socket.on('player:data', data => {
             console.log('Received player data:', data);
             data = JSON.parse(data);
             setPlayerData(data);
@@ -139,6 +165,10 @@ function App() {
                                 return <Navigate to='/login' />;
                             }
                         }}
+                    ></Route>
+                    <Route
+                        path='/offline'
+                        Component={() => <OfflineMode />}
                     ></Route>
                 </Routes>
             </Router>

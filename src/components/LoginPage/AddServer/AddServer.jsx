@@ -50,7 +50,7 @@ const AddServer = () => {
                     <input
                         type='text'
                         placeholder='Server Name'
-                        {...serverName}
+                        {...serverName.inputProps}
                         style={{
                             border: isIncorrect ? '1px solid red' : '1px solid white',
                         }}
@@ -59,7 +59,12 @@ const AddServer = () => {
                         <label>Private</label>
                         <Switch checked={isPrivate} color='primary' onChange={() => setIsPrivate(!isPrivate)} />
                     </div>
-                    <input type='text' placeholder='password' disabled={!isPrivate} {...password} />
+                    <input 
+                        type='text' 
+                        placeholder='password' 
+                        disabled={!isPrivate} 
+                        {...password.inputProps} 
+                    />
                     <button 
                         onClick={handleButtonClick}
                         disabled={isSubmitting}

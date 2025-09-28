@@ -6,13 +6,27 @@ module.exports = socket => {
     const req = socket.request;
 
     const handleGetData = async () => {
+        console.log(`🏠 Getting room data for session roomId: ${req.session.roomId}`);
+        
+        if (!req.session.roomId) {
+            console.log(`❌ No roomId in session for socket: ${socket.id}`);
+            socket.emit('error:noRoom', { message: 'No room associated with session' });
+            return;
+        }
+        
         const room = await getRoom(req.session.roomId);
         
         // Check if room exists
         if (!room) {
-            socket.emit('error:roomNotFound');
+            console.log(`❌ Room not found: ${req.session.roomId}`);
+            socket.emit('error:roomNotFound', { 
+                message: 'Room not found or has expired',
+                roomId: req.session.roomId 
+            });
             return;
         }
+        
+        console.log(`✅ Found room: ${room._id}, players: ${room.players.length}`);
         
         // Handle the situation when the server crashes and any player reconnects after the time has expired
         // Typically, the responsibility for changing players is managed by gameHandler.js.

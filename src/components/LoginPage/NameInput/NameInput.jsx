@@ -24,12 +24,12 @@ const NameInput = ({ isRoomPrivate, roomId }) => {
 
     return (
         <div className={styles.container} style={{ height: isRoomPrivate ? '100px' : '50px' }}>
-            <input placeholder='Nickname' type='text' {...nickname} />
+            <input placeholder='Nickname' type='text' {...nickname.inputProps} />
             {isRoomPrivate ? (
                 <input
                     placeholder='Room password'
                     type='text'
-                    {...password}
+                    {...password.inputProps}
                     style={{ backgroundColor: isPasswordWrong ? 'red' : null }}
                 />
             ) : null}

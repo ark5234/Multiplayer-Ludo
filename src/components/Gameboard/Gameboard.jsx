@@ -96,9 +96,8 @@ const Gameboard = () => {
                     
                     {/* Side Panel */}
                     <div className={styles.sidePanel}>
-                        {started && <Scoreboard />}
-                        {started && <GameActivity />}
-                        {started && (
+                        {/* Room Information Panel */}
+                        <div className={styles.roomInfoPanel}>
                             <RoomManagement 
                                 roomData={{ 
                                     players, 
@@ -107,6 +106,20 @@ const Gameboard = () => {
                                 }} 
                                 players={players} 
                             />
+                        </div>
+                        
+                        {/* Scoreboard Panel */}
+                        {started && (
+                            <div className={styles.scoreboardPanel}>
+                                <Scoreboard />
+                            </div>
+                        )}
+                        
+                        {/* Game Activity Panel */}
+                        {started && (
+                            <div className={styles.gameActivityPanel}>
+                                <GameActivity />
+                            </div>
                         )}
                     </div>
                     

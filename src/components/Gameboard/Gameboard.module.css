@@ -1,12 +1,14 @@
-/* Responsive Game Container */
+/* Improved Responsive Game Container */
 .gameContainer {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr 360px;
+    grid-template-rows: 1fr;
     gap: 20px;
     height: 100vh;
-    padding: 10px;
+    padding: 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     position: relative;
+    box-sizing: border-box;
 }
 
 .gameBoard {
@@ -15,31 +17,69 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    min-width: 600px;
+    min-width: 500px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .navbarContainer {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    max-width: 800px;
+    max-width: 700px;
     margin-top: 20px;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
 }
 
 .sidePanel {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    width: 320px;
-    max-height: 100vh;
-    overflow-y: auto;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.roomInfoPanel {
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 15px;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    padding: 20px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.scoreboardPanel {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 15px;
+    padding: 20px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.gameActivityPanel {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 15px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-height: 250px;
+    overflow: hidden;
 }
 
 .waitingOverlay {
@@ -99,26 +139,72 @@
     }
 }
 
-@media (max-width: 768px) {
+/* Large Desktop - Optimize space usage */
+@media (min-width: 1400px) {
     .gameContainer {
-        padding: 5px;
-        gap: 10px;
+        grid-template-columns: 1fr 400px;
+        gap: 30px;
+        padding: 30px;
+    }
+}
+
+/* Standard Desktop - Better balance */
+@media (max-width: 1200px) {
+    .gameContainer {
+        grid-template-columns: 1fr 340px;
+        gap: 18px;
+        padding: 18px;
+    }
+    
+    .gameBoard {
+        min-width: 450px;
+        padding: 20px;
     }
     
     .sidePanel {
-        flex-direction: column;
-        max-height: 200px;
+        gap: 15px;
+    }
+}
+
+/* Tablet Layout - Stack vertically */
+@media (max-width: 768px) {
+    .gameContainer {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .gameBoard {
+        min-width: unset;
+        width: 100%;
+        padding: 15px;
+        order: 2;
+    }
+    
+    .sidePanel {
+        order: 1;
+        height: auto;
+        min-height: 200px;
+        flex-direction: row;
+        gap: 15px;
+    }
+    
+    .roomInfoPanel,
+    .scoreboardPanel {
+        flex: 1;
+    }
+    
+    .gameActivityPanel {
+        flex: 2;
+        min-height: 180px;
     }
     
     .navbarContainer {
         flex-direction: column;
         align-items: center;
-        gap: 5px;
-    }
-    
-    .waitingOverlay {
-        padding: 20px;
-        max-width: 90%;
+        gap: 8px;
+        margin-top: 10px;
     }
 }
 
