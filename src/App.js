@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import ReactLoading from 'react-loading';
 import Gameboard from './components/Gameboard/Gameboard';
 import LoginPage from './components/LoginPage/LoginPage';
-import OfflineMode from './components/OfflineMode/OfflineMode';
 
 export const PlayerDataContext = createContext();
 export const SocketContext = createContext();
@@ -165,10 +164,6 @@ function App() {
                                 return <Navigate to='/login' />;
                             }
                         }}
-                    ></Route>
-                    <Route
-                        path='/offline'
-                        Component={() => <OfflineMode />}
                     ></Route>
                 </Routes>
             </Router>

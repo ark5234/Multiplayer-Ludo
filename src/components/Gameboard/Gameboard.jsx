@@ -63,6 +63,7 @@ const Gameboard = () => {
             socket.off('room:data');
             socket.off('player:timeout');
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket, context.roomId, context.playerId]);
 
     if (!socket) {

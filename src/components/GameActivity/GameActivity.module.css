@@ -24,8 +24,8 @@
     flex: 1;
     overflow-y: auto;
     padding: 12px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(76, 175, 80, 0.6) transparent;
+    /* scrollbar-width: thin; - removed for compatibility */
+    /* scrollbar-color: rgba(76, 175, 80, 0.6) transparent; - removed for compatibility */
 }
 
 /* Custom scrollbar for webkit browsers */
