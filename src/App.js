@@ -16,7 +16,16 @@ function App() {
     
     useEffect(() => {
         console.log('Initializing Socket.IO connection...');
-        const socket = io(`http://${window.location.hostname}:8080`, { 
+        
+        // Use environment variable in production, localhost in development
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 
+            (process.env.NODE_ENV === 'production' 
+                ? window.location.origin 
+                : `http://${window.location.hostname}:8080`);
+        
+        console.log('Connecting to:', backendUrl);
+        
+        const socket = io(backendUrl, { 
             withCredentials: true,
             timeout: 10000,
             transports: ['websocket', 'polling']

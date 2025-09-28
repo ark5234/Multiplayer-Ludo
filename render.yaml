@@ -1,0 +1,37 @@
+services:
+  # Backend API Service
+  - type: web
+    name: multiplayer-ludo-backend
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CONNECTION_URI
+        fromDatabase:
+          name: multiplayer-ludo-db
+          property: connectionString
+    healthCheckPath: /
+
+  # Frontend Service
+  - type: web
+    name: multiplayer-ludo-frontend
+    runtime: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./build
+    envVars:
+      - key: REACT_APP_BACKEND_URL
+        fromService:
+          type: web
+          name: multiplayer-ludo-backend
+          property: host
+
+databases:
+  # MongoDB Database
+  - name: multiplayer-ludo-db
+    plan: free
