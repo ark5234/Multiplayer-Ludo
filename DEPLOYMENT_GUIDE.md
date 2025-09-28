@@ -7,7 +7,7 @@ This guide will help you deploy your Multiplayer Ludo game to Render for free ho
 1. **GitHub Repository**: Your code should be pushed to GitHub
 2. **Render Account**: Sign up at [render.com](https://render.com) (free)
 
-## 🎯 Deployment Steps
+## 🎯 Deployment Steps (Updated - Manual Deployment Recommended)
 
 ### Step 1: Prepare Your Repository
 
@@ -18,56 +18,47 @@ git commit -m "Ready for Render deployment"
 git push origin main
 ```
 
-### Step 2: Deploy Using Render Blueprint
+### Step 2: Manual Deployment (Recommended Method)
 
-1. **Go to Render Dashboard**: [https://dashboard.render.com](https://dashboard.render.com)
+**⚠️ Note**: Blueprint deployment has limitations. Manual deployment is more reliable.
 
-2. **Create New Blueprint**:
-   - Click "New +" → "Blueprint"
-   - Connect your GitHub repository
-   - Select the repository: `Multiplayer-Ludo`
-   - Render will automatically detect the `render.yaml` file
-
-3. **Configure Services**:
-   The blueprint will create:
-   - **Backend API** (Node.js web service)
-   - **Database** (Free MongoDB)
-   - **Frontend** (Static site)
-
-### Step 3: Environment Variables
-
-The backend will automatically get these environment variables:
-- `NODE_ENV=production`
-- `PORT=10000`
-- `CONNECTION_URI` (from MongoDB database)
-
-### Step 4: Manual Deployment (Alternative)
-
-If Blueprint doesn't work, deploy manually:
-
-#### Deploy Backend:
+#### Deploy Backend First:
 1. Go to Render Dashboard → "New +" → "Web Service"
-2. Connect GitHub → Select repository
+2. Connect GitHub → Select repository: `ark5234/Multiplayer-Ludo`
 3. Configure:
    - **Name**: `multiplayer-ludo-backend`
-   - **Runtime**: Node
+   - **Environment**: Node
    - **Build Command**: `cd backend && npm install`
    - **Start Command**: `cd backend && npm start`
    - **Plan**: Free
+   
+4. **Add Environment Variables**:
+   - `NODE_ENV` = `production`
+   - `PORT` = `10000` (Render default)
+   - `CONNECTION_URI` = (Add after database setup)
+
+#### Deploy Database:
+1. Go to Render Dashboard → "New +" → "PostgreSQL"
+2. Configure:
+   - **Name**: `multiplayer-ludo-database`
+   - **Plan**: Free
+3. **Copy the connection string** and add it to backend as `CONNECTION_URI`
 
 #### Deploy Frontend:
 1. Go to Render Dashboard → "New +" → "Static Site"
-2. Connect GitHub → Select repository  
+2. Connect GitHub → Select repository: `ark5234/Multiplayer-Ludo`
 3. Configure:
    - **Name**: `multiplayer-ludo-frontend`
    - **Build Command**: `npm install && npm run build`
    - **Publish Directory**: `build`
    - **Plan**: Free
 
-#### Add Database:
-1. Go to Render Dashboard → "New +" → "PostgreSQL" (or use MongoDB Atlas)
-2. Plan: Free
-3. Copy connection string to backend environment variables
+4. **Add Environment Variable**:
+   - `REACT_APP_BACKEND_URL` = `https://multiplayer-ludo-backend.onrender.com`
+
+### Step 3: Configure Database Connection
+
+Since we're using PostgreSQL instead of MongoDB, update the backend:
 
 ## 🌐 URLs After Deployment
 

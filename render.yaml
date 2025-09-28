@@ -17,21 +17,7 @@ services:
           property: connectionString
     healthCheckPath: /
 
-  # Frontend Service
-  - type: web
-    name: multiplayer-ludo-frontend
-    runtime: static
-    plan: free
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./build
-    envVars:
-      - key: REACT_APP_BACKEND_URL
-        fromService:
-          type: web
-          name: multiplayer-ludo-backend
-          property: host
-
 databases:
-  # MongoDB Database
+  # PostgreSQL Database (free tier)
   - name: multiplayer-ludo-db
     plan: free
